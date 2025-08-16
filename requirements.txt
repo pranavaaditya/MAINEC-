@@ -1,11 +1,18 @@
-Flask
-SpeechRecognition
-pyttsx3
-pyaudio
-Flask-SocketIO
-openai
-pyautogui
-websockets
-sounddevice
-numpy
-pynput
+# Flask
+# SpeechRecognition
+# pyttsx3
+# pyaudio
+# Flask-SocketIO
+# openai
+# pyautogui
+# websockets
+# sounddevice
+# numpy
+# pynput
+
+
+Flask==2.0.1
+Flask-SocketIO==5.1.1
+speechrecognition==3.8.1
+pyttsx3==2.90
+pyautogui==0.9.53
