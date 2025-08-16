@@ -9,8 +9,3 @@ websockets
 sounddevice
 numpy
 pynput
-# webbrowser
-python-dotenv
-pywin32
-pygetwindow
-gunicorn
