@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAINEC Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'wave': 'wave 2s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        wave: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '10%': { transform: 'rotate(14deg)' },
+                            '20%': { transform: 'rotate(-8deg)' },
+                            '30%': { transform: 'rotate(14deg)' },
+                            '40%': { transform: 'rotate(-4deg)' },
+                            '50%': { transform: 'rotate(10deg)' },
+                            '60%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(0deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 50%, #00D4FF 100%);
+        }
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .glow {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+        .voice-wave {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+        .voice-wave span {
+            height: 10px;
+            width: 4px;
+            display: block;
+            background: #3B82F6;
+            border-radius: 2px;
+            animation: wave 1.2s linear infinite;
+        }
+        .voice-wave span:nth-child(1) { animation-delay: 0.1s; height: 15px; }
+        .voice-wave span:nth-child(2) { animation-delay: 0.2s; height: 20px; }
+        .voice-wave span:nth-child(3) { animation-delay: 0.3s; height: 25px; }
+        .voice-wave span:nth-child(4) { animation-delay: 0.4s; height: 30px; }
+        .voice-wave span:nth-child(5) { animation-delay: 0.5s; height: 25px; }
+        .voice-wave span:nth-child(6) { animation-delay: 0.6s; height: 20px; }
+        .voice-wave span:nth-child(7) { animation-delay: 0.7s; height: 15px; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+    <!-- Animated Background -->
+    <div class="fixed inset-0 overflow-hidden -z-10">
+        <div class="absolute inset-0 gradient-bg opacity-10"></div>
+        <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <!-- Header with Animation -->
+        <header class="flex flex-col md:flex-row justify-between items-center mb-12 animate__animated animate__fadeIn">
+            <div class="flex items-center mb-6 md:mb-0">
+                <div class="w-16 h-16 bg-blue-500 rounded-xl flex items-center justify-center mr-4 glow animate__animated animate__pulse animate__infinite">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold bg-clip-text text-transparent gradient-bg">MAINEC Control</h1>
+                    <p class="text-gray-600">Multimodal AI Interface for New Era Computing</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative group">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-200"></div>
+                    <button class="relative px-6 py-2 bg-white rounded-lg font-medium text-gray-800 shadow-sm">
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                            Settings
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate__animated animate__fadeInUp">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-blue-100 text-blue-500 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Response Time</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="response-time">0.4s</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-green-100 text-green-500 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">System Status</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="system-status">Online</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
+                <div class="p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-purple-100 text-purple-500 mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Commands Today</p>
+                            <h3 class="text-2xl font-bold text-gray-800" id="command-count">0</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Voice Assistant Panel -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden animate__animated animate__fadeInLeft">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                                <span class="w-3 h-3 rounded-full bg-blue-500 mr-2 animate-pulse"></span>
+                                Voice Assistant
+                            </h2>
+                            <div class="flex items-center">
+                                <span id="voice-status" class="px-3 py-1 rounded-full text-sm font-medium {{ 'bg-green-100 text-green-800' if voice_active else 'bg-red-100 text-red-800' }}">
+                                    {{ 'ACTIVE' if voice_active else 'INACTIVE' }}
+                                </span>
+                                <div id="listening-indicator" class="voice-wave ml-3" style="display: none;">
+                                    <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                            <div id="voice-feedback" class="min-h-32">
+                                {% if last_command %}
+                                    <p class="text-gray-700 mb-2"><span class="font-semibold">Your Command:</span> {{ last_command }}</p>
+                                {% endif %}
+                                <p id="assistant-response" class="text-gray-800">
+                                    <span class="font-semibold">Assistant:</span> 
+                                    <span id="response-text" class="text-blue-600">
+                                        {% if last_response %}{{ last_response }}{% else %}Ready to receive your commands{% endif %}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-center">
+                            <div class="relative w-32 h-32 mb-6 animate-float">
+                                <img src="https://cdn3d.iconscout.com/3d/premium/thumb/ai-robot-6299539-5187871.png" alt="AI Assistant" class="w-full h-full object-contain">
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                            <h3 class="font-medium text-blue-800 mb-2">Try saying:</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-white rounded-full text-sm text-blue-600 border border-blue-200">"Open Chrome"</span>
+                                <span class="px-3 py-1 bg-white rounded-full text-sm text-blue-600 border border-blue-200">"Minimize window"</span>
+                                <span class="px-3 py-1 bg-white rounded-full text-sm text-blue-600 border border-blue-200">"Open Notepad"</span>
+                                <span class="px-3 py-1 bg-white rounded-full text-sm text-blue-600 border border-blue-200">"What time is it?"</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Command Reference -->
+            <div class="animate__animated animate__fadeInRight">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden h-full">
+                    <div class="p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Command Reference
+                        </h2>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd" />
+                                    </svg>
+                                    Voice Commands
+                                </h3>
+                                <div class="space-y-2">
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-50 hover:border-blue-200">
+                                        <div class="font-medium text-blue-600">"Open Chrome"</div>
+                                        <p class="text-sm text-gray-600">Launches Google Chrome browser</p>
+                                    </div>
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-50 hover:border-blue-200">
+                                        <div class="font-medium text-blue-600">"Minimize window"</div>
+                                        <p class="text-sm text-gray-600">Minimizes the current active window</p>
+                                    </div>
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-blue-50 hover:border-blue-200">
+                                        <div class="font-medium text-blue-600">"Open File Explorer"</div>
+                                        <p class="text-sm text-gray-600">Opens Windows File Explorer</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                                    </svg>
+                                    Gesture Controls
+                                </h3>
+                                <div class="space-y-2">
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-green-50 hover:border-green-200">
+                                        <div class="font-medium text-green-600">Hand Right/Left</div>
+                                        <p class="text-sm text-gray-600">Moves cursor horizontally</p>
+                                    </div>
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-green-50 hover:border-green-200">
+                                        <div class="font-medium text-green-600">Hand Up/Down</div>
+                                        <p class="text-sm text-gray-600">Moves cursor vertically</p>
+                                    </div>
+                                    <div class="command-card p-3 bg-gray-50 rounded-lg border border-gray-200 transition-all duration-300 hover:bg-green-50 hover:border-green-200">
+                                        <div class="font-medium text-green-600">Punch Gesture</div>
+                                        <p class="text-sm text-gray-600">Minimizes current window</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-gray-500 text-sm animate__animated animate__fadeInUp">
+            <p>MAINEC Control Panel v1.0 | © 2023 Multimodal AI Interface</p>
+            <p class="mt-1">Voice + Gesture Control System</p>
+        </footer>
+    </div>
+
+    <script>
+        const socket = io();
+        let commandCount = 0;
+        let startTime;
+        
+        // Update UI in real-time
+        socket.on('state_update', function(data) {
+            if (data.key === 'voice_active') {
+                const statusElement = document.getElementById('voice-status');
+                const indicator = document.getElementById('listening-indicator');
+                
+                statusElement.textContent = data.value ? 'ACTIVE' : 'INACTIVE';
+                statusElement.className = data.value ? 
+                    'px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800' : 
+                    'px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
+                indicator.style.display = data.value ? 'block' : 'none';
+                
+                if (data.value) {
+                    document.getElementById('system-status').textContent = 'Active';
+                    document.getElementById('system-status').className = 'text-2xl font-bold text-green-600';
+                } else {
+                    document.getElementById('system-status').textContent = 'Standby';
+                    document.getElementById('system-status').className = 'text-2xl font-bold text-gray-800';
+                }
+            }
+            
+            if (data.key === 'last_command') {
+                commandCount++;
+                document.getElementById('command-count').textContent = commandCount;
+                startTime = performance.now();
+                
+                if (data.value) {
+                    const cmdElement = document.createElement('p');
+                    cmdElement.className = 'text-gray-700 mb-2';
+                    cmdElement.innerHTML = `<span class="font-semibold">Your Command:</span> ${data.value}`;
+                    const feedbackDiv = document.getElementById('voice-feedback');
+                    
+                    // Remove previous command if exists
+                    const prevCmd = feedbackDiv.querySelector('p:first-child');
+                    if (prevCmd) feedbackDiv.removeChild(prevCmd);
+                    
+                    feedbackDiv.insertBefore(cmdElement, feedbackDiv.firstChild);
+                }
+            }
+            
+            if (data.key === 'last_response' && data.value) {
+                const endTime = performance.now();
+                const responseTime = ((endTime - startTime) / 1000).toFixed(1);
+                document.getElementById('response-time').textContent = `${responseTime}s`;
+                document.getElementById('response-text').textContent = data.value;
+            }
+        });
+        
+        // Animate the assistant image on hover
+        const assistantImg = document.querySelector('.animate-float');
+        assistantImg.addEventListener('mouseenter', () => {
+            assistantImg.classList.add('animate-wiggle');
+        });
+        assistantImg.addEventListener('mouseleave', () => {
+            assistantImg.classList.remove('animate-wiggle');
+        });
+    </script>
+</body>
+</html>

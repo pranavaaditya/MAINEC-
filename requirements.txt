@@ -1,0 +1,16 @@
+Flask
+SpeechRecognition
+pyttsx3
+pyaudio
+Flask-SocketIO
+openai
+pyautogui
+websockets
+sounddevice
+numpy
+pynput
+webbrowser
+python-dotenv
+pywin32
+pygetwindow
+gunicorn
